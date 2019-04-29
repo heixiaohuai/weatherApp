@@ -1,5 +1,7 @@
 package com.fastweather.android.util;
 
+import android.util.Log;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
@@ -9,6 +11,7 @@ import okhttp3.Request;
 
 public class HttpUtil {
     public static void sendOkHttpRequestByGet(String address, okhttp3.Callback callback){
+        Log.d("this is address:", address);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(address)
