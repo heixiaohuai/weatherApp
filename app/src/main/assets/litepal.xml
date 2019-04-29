@@ -1,0 +1,9 @@
+<litepal>
+    <dbname value="fast_weather"/>
+    <version value="1"/>
+    <list>
+        <mapping class="com.fastweather.android.pojo.Province"/>
+        <mapping class="com.fastweather.android.pojo.City"/>
+        <mapping class="com.fastweather.android.pojo.County"/>
+    </list>
+</litepal>
