@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fastweather.android.R;
+import com.fastweather.android.myApplication.MyApplication;
 import com.fastweather.android.pojo.City;
 import com.fastweather.android.pojo.County;
 import com.fastweather.android.pojo.Province;
@@ -37,6 +38,7 @@ import okhttp3.Response;
  */
 
 public class ChooseAreaFragment extends Fragment {
+
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
     public static final int LEVEL_COUNTY = 2;
@@ -123,7 +125,7 @@ public class ChooseAreaFragment extends Fragment {
             listView.setSelection(0);
             currentLevel = LEVEL_PROVINCE;
         }else {
-            String address = "http://guolin.tech/api/china";
+            String address = "http://" + ((MyApplication) getActivity().getApplication()).getOkHttpURL() + "/Android/getAllProvince";
             queryFromServer(address, "province");
         }
     }
@@ -145,7 +147,7 @@ public class ChooseAreaFragment extends Fragment {
             currentLevel = LEVEL_CITY;
         }else {
             int provinceCode = selectedProvince.getProvinceCode();
-            String address = "http://guolin.tech/api/china/" + provinceCode;
+            String address = "http://" + ((MyApplication) getActivity().getApplication()).getOkHttpURL() + "/Android/getAllArea/" + provinceCode;
             queryFromServer(address, "city");
         }
     }
@@ -168,7 +170,7 @@ public class ChooseAreaFragment extends Fragment {
         }else {
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
-            String address = "http://guolin.tech/api/china/" + provinceCode + "/" + cityCode;
+            String address = "http://" + ((MyApplication) getActivity().getApplication()).getOkHttpURL() + "/Android/getAllArea/" + provinceCode + "/" + cityCode;
             Log.d("requestURL", address);
             queryFromServer(address, "county");
         }
@@ -183,7 +185,6 @@ public class ChooseAreaFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
-                Log.d("this is response", responseText);
                 boolean result = false;
                 if ("province".equals(type)){
                     result = ParseGsonUtil.handleProvinceResponse(responseText);
@@ -215,7 +216,7 @@ public class ChooseAreaFragment extends Fragment {
                     @Override
                     public void run() {
                         closeProgressDialog();
-                        Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyApplication.getContext(), "加载失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

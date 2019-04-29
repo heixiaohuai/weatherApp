@@ -20,7 +20,6 @@ public class ParseGsonUtil {
     * */
     public static boolean handleProvinceResponse(String response){
         if (!TextUtils.isEmpty(response)){
-            Log.d("this is response data:", response);
             JSONArray allProvince = JSONArray.parseArray(response);
             for (int i=0; i<allProvince.size(); i++){
                 JSONObject provinceObject = allProvince.getJSONObject(i);
@@ -40,7 +39,6 @@ public class ParseGsonUtil {
     * */
     public static boolean handleCityResponse(String response, int provinceId){
         if (!TextUtils.isEmpty(response)){
-            Log.d("this is response data:", response);
             JSONArray allCity = JSONArray.parseArray(response);
             for (int i=0; i<allCity.size(); i++){
                 JSONObject cityObject = allCity.getJSONObject(i);
@@ -61,7 +59,6 @@ public class ParseGsonUtil {
     * */
     public static boolean handleCountyResponse(String response, int cityId){
         if (!TextUtils.isEmpty(response)){
-            Log.d("this is response data:", response);
             JSONArray allCounty = JSONArray.parseArray(response);
             for (int i=0; i<allCounty.size(); i++){
                 JSONObject countyObject = allCounty.getJSONObject(i);
