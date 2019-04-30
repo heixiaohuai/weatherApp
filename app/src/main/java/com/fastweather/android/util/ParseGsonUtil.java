@@ -2,12 +2,19 @@ package com.fastweather.android.util;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ListView;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fastweather.android.gson.NowWeather;
+import com.fastweather.android.gson.WeatherInfo;
 import com.fastweather.android.pojo.City;
 import com.fastweather.android.pojo.County;
 import com.fastweather.android.pojo.Province;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 13055 on 2019/4/29.
@@ -70,5 +77,29 @@ public class ParseGsonUtil {
             return true;
         }
         return false;
+    }
+
+    /*
+    * 将返回的天气相关的json数据解析成NowWeather实体类
+    * 运用的是阿里巴巴的FastJson
+    * */
+    public static NowWeather handleNowWeatherInfoResponse(String response){
+        JSONArray allWeatherInfoArray = JSONArray.parseArray(response);
+        JSONObject nowWeatherInfoObject = allWeatherInfoArray.getJSONObject(0);
+        NowWeather nowWeather = JSON.parseObject(String.valueOf(nowWeatherInfoObject), NowWeather.class);
+        return nowWeather;
+    }
+
+    /*
+    * 将返回的天气相关的Json数据解析为WeatherInfo实体类类型的集合
+    * 使用的是阿里巴巴的FastJson
+    * */
+    public static List<WeatherInfo> handleFutureWeatherInfoResponse(String response){
+        List<WeatherInfo> futureWeatherInfoList = new ArrayList<>();
+        JSONArray allWeatherInfoArray = JSONArray.parseArray(response);
+        for (int i=1; i<allWeatherInfoArray.size(); i++){
+            futureWeatherInfoList.add(JSON.parseObject(String.valueOf(allWeatherInfoArray.getJSONObject(i)), WeatherInfo.class));
+        }
+        return futureWeatherInfoList;
     }
 }
