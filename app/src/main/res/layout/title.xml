@@ -28,5 +28,5 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:textColor="#fff"
-        android:textSize="16sp"/>
+        android:textSize="12sp"/>
 </RelativeLayout>

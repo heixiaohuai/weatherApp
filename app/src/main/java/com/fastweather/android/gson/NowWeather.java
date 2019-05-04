@@ -234,15 +234,6 @@ public class NowWeather {
             this.so2 = so2;
         }
     }
-    /*public String turnoverTime;//天气数据更新时间
-    public String humidity;//湿度
-    public int aqi;//空气污染指数
-    public String weatherDescribe;//天气描述，例如：多云
-    public int temperature;//当前温度
-    public class aqiDetail{
-        public String areaName;//地区名称
-        public String quality;//对aqi的等计划划分的描述
-    }*/
 
 
 }

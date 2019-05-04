@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.fastweather.android.activity.WeatherActivity;
 import com.fastweather.android.gson.NowWeather;
@@ -64,8 +65,15 @@ public class AutoUpdateService extends Service {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseText = response.body().string();
-                    NowWeather nowWeather = ParseGsonUtil.handleNowWeatherInfoResponse(responseText);
-                    List<WeatherInfo> futureWeatherInfoList = ParseGsonUtil.handleFutureWeatherInfoResponse(responseText);
+                    NowWeather nowWeather = null;
+                    List<WeatherInfo> futureWeatherInfoList = null;
+                    try {
+                        nowWeather = ParseGsonUtil.handleNowWeatherInfoResponse(responseText);
+                        futureWeatherInfoList = ParseGsonUtil.handleFutureWeatherInfoResponse(responseText);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
                     if (nowWeather != null && futureWeatherInfoList != null){
                         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AutoUpdateService.this).edit();
                         editor.putString("weather", responseText);

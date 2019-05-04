@@ -3,8 +3,6 @@ package com.fastweather.android.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -24,6 +22,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.fastweather.android.R;
+import com.fastweather.android.gson.CityInfo;
 import com.fastweather.android.gson.NowWeather;
 import com.fastweather.android.gson.WeatherInfo;
 import com.fastweather.android.myApplication.MyApplication;
@@ -51,9 +50,11 @@ public class WeatherActivity extends AppCompatActivity {
 
     public ImageView bingPicImage;
     public SwipeRefreshLayout swipeRefresh;
+    private String mCityName;
     private Button navButton;
     public DrawerLayout drawerLayout;
 
+    private ImageView weatherImage;
     private ScrollView weatherLayout;
     private TextView titleCity;//地域
     private TextView titleUpdateTime;//更新时间
@@ -116,26 +117,27 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh.setColorSchemeColors(R.color.colorPrimary);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navButton = (Button) findViewById(R.id.nav_button);
+        weatherImage = (ImageView) findViewById(R.id.weatherImage);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
-        final String cityName;
         if (weatherString != null){
             //有缓存时直接加载数据进行展示，不进行网络请求
             NowWeather nowWeather = ParseGsonUtil.handleNowWeatherInfoResponse(weatherString);
             List<WeatherInfo> futureWeatherInfoList = ParseGsonUtil.handleFutureWeatherInfoResponse(weatherString);
-            cityName = nowWeather.getAqiDetail().getArea();
-            showWeatherInfo(nowWeather, futureWeatherInfoList);
+            CityInfo cityInfo = ParseGsonUtil.handleCityInfoResponse(weatherString);
+            mCityName = cityInfo.getC3();
+            showWeatherInfo(nowWeather, futureWeatherInfoList, cityInfo);
         }else {
             //无缓存时进行网络请求展示数据
-            cityName = getIntent().getStringExtra("cityName");
+            mCityName = getIntent().getStringExtra("cityName");
             weatherLayout.setVisibility(View.INVISIBLE);
-            requestWeather(cityName);
+            requestWeather(mCityName);
         }
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestWeather(cityName);
+                requestWeather(mCityName);
             }
         });
         String bingPic = prefs.getString("bing_pic", null);
@@ -155,8 +157,9 @@ public class WeatherActivity extends AppCompatActivity {
     /*
     * 根据城市名来查询天气信息
     * */
-    public void requestWeather(String cityName) {
-        String weatherURL = "http://" + ((MyApplication) getApplication()).getOkHttpURL() + "/Android/getWeather/" + cityName;
+    public void requestWeather(String countyName) {
+        String weatherURL = "http://" + ((MyApplication) getApplication()).getOkHttpURL() + "/Android/getWeather/" + countyName;
+        Log.d("weatherURL", weatherURL);
         HttpUtil.sendOkHttpRequestByGet(weatherURL, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -173,8 +176,12 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
+                Log.d("responseText", responseText);
                 final NowWeather nowWeather = ParseGsonUtil.handleNowWeatherInfoResponse(responseText);
+                Log.d("nowWeather", String.valueOf(nowWeather));
                 final List<WeatherInfo> futureWeatherInfoList = ParseGsonUtil.handleFutureWeatherInfoResponse(responseText);
+                Log.d("futureWeatherInfoList", String.valueOf(futureWeatherInfoList));
+                final CityInfo cityInfo = ParseGsonUtil.handleCityInfoResponse(responseText);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -182,7 +189,9 @@ public class WeatherActivity extends AppCompatActivity {
                             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
                             editor.putString("weather", responseText);
                             editor.apply();
-                            showWeatherInfo(nowWeather, futureWeatherInfoList);
+                            mCityName = cityInfo.getC3();
+                            Log.d("mCityName", mCityName);
+                            showWeatherInfo(nowWeather, futureWeatherInfoList, cityInfo);
                         }else {
                             Toast.makeText(MyApplication.getContext(), "获取天气信息失败", Toast.LENGTH_SHORT).show();
                         }
@@ -224,18 +233,28 @@ public class WeatherActivity extends AppCompatActivity {
     /*
     * 将JSON数据中的天气信息进行展示
     * */
-    private void showWeatherInfo(NowWeather nowWeather, List<WeatherInfo> futureWeatherInfoList) {
+    private void showWeatherInfo(final NowWeather nowWeather, List<WeatherInfo> futureWeatherInfoList, CityInfo cityInfo) {
         Intent intent = new Intent(this, AutoUpdateService.class);
         startService(intent);
-        String cityName = nowWeather.getAqiDetail().getArea();
+        String cityName = cityInfo.getC3();
+        Log.d("titleCityName", cityName);
         String updateTime = nowWeather.getTemperature_time();
         String degree = nowWeather.getTemperature() + "°C";
         String weatherInfo = nowWeather.getWeather();
         titleCity.setText(cityName);
-        titleUpdateTime.setText(updateTime);
+        titleUpdateTime.setText("更新时间："+updateTime);
         degreeText.setText(degree);
         weatherInfoText.setText(weatherInfo);
         forecastLayout.removeAllViews();
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
+        editor.putString("weatherImage", nowWeather.getWeather_pic());
+        editor.apply();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.with(WeatherActivity.this).load(nowWeather.getWeather_pic()).into(weatherImage);
+            }
+        });
         /*
         * 展示未来几天的天气信息
         * */

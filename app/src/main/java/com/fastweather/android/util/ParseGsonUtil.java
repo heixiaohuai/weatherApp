@@ -7,6 +7,7 @@ import android.widget.ListView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fastweather.android.gson.CityInfo;
 import com.fastweather.android.gson.NowWeather;
 import com.fastweather.android.gson.WeatherInfo;
 import com.fastweather.android.pojo.City;
@@ -84,10 +85,15 @@ public class ParseGsonUtil {
     * 运用的是阿里巴巴的FastJson
     * */
     public static NowWeather handleNowWeatherInfoResponse(String response){
-        JSONArray allWeatherInfoArray = JSONArray.parseArray(response);
-        JSONObject nowWeatherInfoObject = allWeatherInfoArray.getJSONObject(0);
-        NowWeather nowWeather = JSON.parseObject(String.valueOf(nowWeatherInfoObject), NowWeather.class);
-        return nowWeather;
+        try {
+            JSONArray allWeatherInfoArray = JSONArray.parseArray(response);
+            JSONObject nowWeatherInfoObject = allWeatherInfoArray.getJSONObject(0);
+            NowWeather nowWeather = JSON.parseObject(String.valueOf(nowWeatherInfoObject), NowWeather.class);
+            return nowWeather;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /*
@@ -97,9 +103,20 @@ public class ParseGsonUtil {
     public static List<WeatherInfo> handleFutureWeatherInfoResponse(String response){
         List<WeatherInfo> futureWeatherInfoList = new ArrayList<>();
         JSONArray allWeatherInfoArray = JSONArray.parseArray(response);
-        for (int i=1; i<allWeatherInfoArray.size(); i++){
+        for (int i=2; i<allWeatherInfoArray.size(); i++){
             futureWeatherInfoList.add(JSON.parseObject(String.valueOf(allWeatherInfoArray.getJSONObject(i)), WeatherInfo.class));
         }
         return futureWeatherInfoList;
+    }
+
+    /*
+    * 将返回的天气信息json串中的cityInfo信息解析为CityInfo实体类类型
+    * 使用的是阿里巴巴的FastJson
+    * */
+    public static CityInfo handleCityInfoResponse(String response){
+        JSONArray allWeatherInfoArray = JSONArray.parseArray(response);
+        JSONObject cityInfoObject = allWeatherInfoArray.getJSONObject(1);
+        CityInfo cityInfo = JSON.parseObject(String.valueOf(cityInfoObject), CityInfo.class);
+        return cityInfo;
     }
 }
