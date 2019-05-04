@@ -50,7 +50,7 @@
                     android:layout_below="@+id/suggestion1_img"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textColor="#fff"/>
 
                 <TextView
@@ -59,7 +59,7 @@
                     android:layout_below="@id/suggestion1_title"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:text="舒适"
                     android:textColor="#fff"/>
             </RelativeLayout>
@@ -84,7 +84,7 @@
                     android:layout_below="@+id/suggestion2_img"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textColor="#fff"/>
 
                 <TextView
@@ -93,7 +93,7 @@
                     android:layout_below="@id/suggestion2_title"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:text="垂钓"
                     android:textColor="#fff"/>
             </RelativeLayout>
@@ -118,7 +118,7 @@
                     android:layout_below="@+id/suggestion3_img"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textColor="#fff"/>
 
                 <TextView
@@ -127,7 +127,7 @@
                     android:layout_below="@id/suggestion3_title"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:text="洗车"
                     android:textColor="#fff"/>
             </RelativeLayout>
@@ -152,7 +152,7 @@
                     android:layout_below="@+id/suggestion4_img"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textColor="#fff"/>
 
                 <TextView
@@ -161,7 +161,7 @@
                     android:layout_below="@id/suggestion4_title"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:text="逛街"
                     android:textColor="#fff"/>
             </RelativeLayout>
@@ -197,7 +197,7 @@
                     android:layout_below="@+id/suggestion5_img"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textColor="#fff"/>
 
                 <TextView
@@ -206,7 +206,7 @@
                     android:layout_below="@id/suggestion5_title"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:text="感冒"
                     android:textColor="#fff"/>
             </RelativeLayout>
@@ -231,7 +231,7 @@
                     android:layout_below="@+id/suggestion6_img"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textColor="#fff"/>
 
                 <TextView
@@ -240,7 +240,7 @@
                     android:layout_below="@id/suggestion6_title"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:text="穿衣"
                     android:textColor="#fff"/>
             </RelativeLayout>
@@ -265,7 +265,7 @@
                     android:layout_below="@+id/suggestion7_img"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textColor="#fff"/>
 
                 <TextView
@@ -274,7 +274,7 @@
                     android:layout_below="@id/suggestion7_title"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:text="紫外线"
                     android:textColor="#fff"/>
             </RelativeLayout>
@@ -299,7 +299,7 @@
                     android:layout_below="@+id/suggestion8_img"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textColor="#fff"/>
 
                 <TextView
@@ -308,7 +308,7 @@
                     android:layout_below="@id/suggestion8_title"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:text="啤酒"
                     android:textColor="#fff"/>
             </RelativeLayout>

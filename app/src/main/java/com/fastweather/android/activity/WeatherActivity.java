@@ -1,24 +1,40 @@
 package com.fastweather.android.activity;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.fastweather.android.R;
 import com.fastweather.android.gson.NowWeather;
 import com.fastweather.android.gson.WeatherInfo;
 import com.fastweather.android.myApplication.MyApplication;
+import com.fastweather.android.service.AutoUpdateService;
 import com.fastweather.android.util.HttpUtil;
 import com.fastweather.android.util.ParseGsonUtil;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -30,6 +46,13 @@ import okhttp3.Response;
  */
 
 public class WeatherActivity extends AppCompatActivity {
+
+    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("M月d号");
+
+    public ImageView bingPicImage;
+    public SwipeRefreshLayout swipeRefresh;
+    private Button navButton;
+    public DrawerLayout drawerLayout;
 
     private ScrollView weatherLayout;
     private TextView titleCity;//地域
@@ -57,6 +80,7 @@ public class WeatherActivity extends AppCompatActivity {
     private ImageView suggestionPJImage;//啤酒的图片
     private TextView suggestionPJTitleText;//啤酒的title
 
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,26 +101,61 @@ public class WeatherActivity extends AppCompatActivity {
         suggestionDYTitleText = (TextView) findViewById(R.id.suggestion2_title);
         suggestionXCImage = (ImageView) findViewById(R.id.suggestion3_img);
         suggestionXCTitleText = (TextView) findViewById(R.id.suggestion3_title);
-        suggestionGMImage = (ImageView) findViewById(R.id.suggestion4_img);
-        suggestionGMTitleText = (TextView) findViewById(R.id.suggestion4_title);
-        suggestionZWXImage = (ImageView) findViewById(R.id.suggestion5_img);
-        suggestionZWXTitleText = (TextView) findViewById(R.id.suggestion5_title);
+        suggestionGJImage = (ImageView) findViewById(R.id.suggestion4_img);
+        suggestionGJTitleText = (TextView) findViewById(R.id.suggestion4_title);
+        suggestionGMImage = (ImageView) findViewById(R.id.suggestion5_img);
+        suggestionGMTitleText = (TextView) findViewById(R.id.suggestion5_title);
         suggestionCYImage = (ImageView) findViewById(R.id.suggestion6_img);
         suggestionCYTitleText = (TextView) findViewById(R.id.suggestion6_title);
-        suggestionGJImage = (ImageView) findViewById(R.id.suggestion7_img);
-        suggestionGJTitleText = (TextView) findViewById(R.id.suggestion7_title);
+        suggestionZWXImage = (ImageView) findViewById(R.id.suggestion7_img);
+        suggestionZWXTitleText = (TextView) findViewById(R.id.suggestion7_title);
         suggestionPJImage = (ImageView) findViewById(R.id.suggestion8_img);
         suggestionPJTitleText = (TextView) findViewById(R.id.suggestion8_title);
+        bingPicImage = (ImageView) findViewById(R.id.bing_pic_image);
+        swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        swipeRefresh.setColorSchemeColors(R.color.colorPrimary);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navButton = (Button) findViewById(R.id.nav_button);
 
-        String cityName = getIntent().getStringExtra("cityName");
-        weatherLayout.setVisibility(View.INVISIBLE);
-        requestWeather(cityName);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String weatherString = prefs.getString("weather", null);
+        final String cityName;
+        if (weatherString != null){
+            //有缓存时直接加载数据进行展示，不进行网络请求
+            NowWeather nowWeather = ParseGsonUtil.handleNowWeatherInfoResponse(weatherString);
+            List<WeatherInfo> futureWeatherInfoList = ParseGsonUtil.handleFutureWeatherInfoResponse(weatherString);
+            cityName = nowWeather.getAqiDetail().getArea();
+            showWeatherInfo(nowWeather, futureWeatherInfoList);
+        }else {
+            //无缓存时进行网络请求展示数据
+            cityName = getIntent().getStringExtra("cityName");
+            weatherLayout.setVisibility(View.INVISIBLE);
+            requestWeather(cityName);
+        }
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                requestWeather(cityName);
+            }
+        });
+        String bingPic = prefs.getString("bing_pic", null);
+        if (bingPic != null){
+            Glide.with(this).load(bingPic).into(bingPicImage);
+        }else {
+            loadBingPic();
+        }
+        navButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
     }
 
     /*
     * 根据城市名来查询天气信息
     * */
-    private void requestWeather(String cityName) {
+    public void requestWeather(String cityName) {
         String weatherURL = "http://" + ((MyApplication) getApplication()).getOkHttpURL() + "/Android/getWeather/" + cityName;
         HttpUtil.sendOkHttpRequestByGet(weatherURL, new Callback() {
             @Override
@@ -106,6 +165,7 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(MyApplication.getContext(), "获取天气信息失败", Toast.LENGTH_SHORT).show();
+                        swipeRefresh.setRefreshing(false);
                     }
                 });
             }
@@ -119,10 +179,42 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (nowWeather != null && futureWeatherInfoList != null){
+                            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
+                            editor.putString("weather", responseText);
+                            editor.apply();
                             showWeatherInfo(nowWeather, futureWeatherInfoList);
                         }else {
                             Toast.makeText(MyApplication.getContext(), "获取天气信息失败", Toast.LENGTH_SHORT).show();
                         }
+                        swipeRefresh.setRefreshing(false);
+                    }
+                });
+            }
+        });
+        loadBingPic();
+    }
+
+    /*
+    * 加载必应每日一图
+    * */
+    private void loadBingPic(){
+        String requestBingPic = "http://"+ ((MyApplication) getApplication()).getOkHttpURL() + "/Android/getBingPic";
+        HttpUtil.sendOkHttpRequestByGet(requestBingPic, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String bingPic = response.body().string();
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
+                editor.putString("bing_pic", bingPic);
+                editor.apply();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(WeatherActivity.this).load(bingPic).into(bingPicImage);
                     }
                 });
             }
@@ -133,6 +225,8 @@ public class WeatherActivity extends AppCompatActivity {
     * 将JSON数据中的天气信息进行展示
     * */
     private void showWeatherInfo(NowWeather nowWeather, List<WeatherInfo> futureWeatherInfoList) {
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
         String cityName = nowWeather.getAqiDetail().getArea();
         String updateTime = nowWeather.getTemperature_time();
         String degree = nowWeather.getTemperature() + "°C";
@@ -142,6 +236,9 @@ public class WeatherActivity extends AppCompatActivity {
         degreeText.setText(degree);
         weatherInfoText.setText(weatherInfo);
         forecastLayout.removeAllViews();
+        /*
+        * 展示未来几天的天气信息
+        * */
         for (int i=0; i<futureWeatherInfoList.size(); i++){
             View view = LayoutInflater.from(this).inflate(R.layout.forecast_item, forecastLayout, false);
             TextView dateText = (TextView) view.findViewById(R.id.date_text);
@@ -149,8 +246,72 @@ public class WeatherActivity extends AppCompatActivity {
             TextView infoText = (TextView) view.findViewById(R.id.info_text);
             TextView maxTemp = (TextView) view.findViewById(R.id.max_text);
             TextView minTemp = (TextView) view.findViewById(R.id.min_text);
+            dateText.setText(simpleDateFormat.format(getAfterDate(new Date(), i)).toString());
+            weekText.setText(parseWeek(futureWeatherInfoList.get(i).getWeekday()));
+            infoText.setText(futureWeatherInfoList.get(i).getDay_weather());
+            maxTemp.setText(futureWeatherInfoList.get(i).getDay_air_temperature());
+            minTemp.setText(futureWeatherInfoList.get(i).getNight_air_temperature());
+            forecastLayout.addView(view);
         }
+        /*
+        * 展示空气污染指数，空气质量等级以及pm2.5含量
+        * */
+        if (nowWeather.getAqiDetail() != null){
+            aqiText.setText(nowWeather.getAqiDetail().getAqi());
+            aqiLevelText.setText(nowWeather.getAqiDetail().getQuality());
+            pm25Text.setText(nowWeather.getAqiDetail().getPm2_5());
+        }
+        /*
+        * 展示生活小建议
+        * */
+        suggestionComfortImage.setImageResource(R.drawable.shushi);
+        suggestionComfortTitleText.setText(futureWeatherInfoList.get(1).getIndex().getComfort().getTitle());
+        suggestionDYImage.setImageResource(R.drawable.diaoyu);
+        suggestionDYTitleText.setText(futureWeatherInfoList.get(1).getIndex().getDy().getTitle());
+        suggestionXCImage.setImageResource(R.drawable.xiche);
+        suggestionXCTitleText.setText(futureWeatherInfoList.get(1).getIndex().getWash_car().getTitle());
+        suggestionGJImage.setImageResource(R.drawable.gouwu);
+        suggestionGJTitleText.setText(futureWeatherInfoList.get(1).getIndex().getGj().getTitle());
+        suggestionGMImage.setImageResource(R.drawable.ganmao);
+        suggestionGMTitleText.setText(futureWeatherInfoList.get(1).getIndex().getCold().getTitle());
+        suggestionCYImage.setImageResource(R.drawable.chuanyi);
+        suggestionCYTitleText.setText(futureWeatherInfoList.get(1).getIndex().getClothes().getTitle());
+        suggestionZWXImage.setImageResource(R.drawable.ziwaixian);
+        suggestionZWXTitleText.setText(futureWeatherInfoList.get(1).getIndex().getUv().getTitle());
+        suggestionPJImage.setImageResource(R.drawable.pijiu);
+        suggestionPJTitleText.setText(futureWeatherInfoList.get(1).getIndex().getPj().getTitle());
+        weatherLayout.setVisibility(View.VISIBLE);
     }
 
+    /*
+    * 获取今天以及后六天的日期，用于展示
+    * */
+    public Date getAfterDate(Date date, int number){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, number);
+        return calendar.getTime();
+    }
 
+    /*
+    * 根据返回的星期编号返回正确的星期
+    * */
+    public String parseWeek(int i){
+        if (i == 1){
+            return "星期一";
+        }else if (i == 2){
+            return "星期二";
+        }else if (i == 3){
+            return "星期三";
+        }else if (i == 4){
+            return "星期四";
+        }else if (i == 5){
+            return "星期五";
+        }else if (i == 6){
+            return "星期六";
+        }else if (i == 7){
+            return "星期天";
+        }
+        return null;
+    }
 }
