@@ -2,6 +2,8 @@ package com.fastweather.android.util;
 
 import android.util.Log;
 
+import com.fastweather.android.pojo.User;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 

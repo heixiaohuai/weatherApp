@@ -52,4 +52,14 @@
             android:name="com.fastweather.android.fragment.ChooseAreaFragment"
             android:layout_gravity="start"/>
     </android.support.v4.widget.DrawerLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_get_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        app:backgroundTint="#778cea"
+        app:rippleColor="#ecd75f"
+        android:src="@drawable/dingwei"/>
 </FrameLayout>

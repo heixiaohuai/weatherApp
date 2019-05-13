@@ -2,6 +2,9 @@ package com.fastweather.android.myApplication;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.design.widget.Snackbar;
+
+import com.fastweather.android.pojo.User;
 
 import org.litepal.LitePal;
 
@@ -47,5 +50,6 @@ public class MyApplication extends Application {
         context = getApplicationContext();
         setOkHttpURL("192.168.1.157:8080");
         LitePal.initialize(context);
+        loginPhone = null;
     }
 }

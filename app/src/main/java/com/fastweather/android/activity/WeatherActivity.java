@@ -6,12 +6,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -45,7 +48,7 @@ import okhttp3.Response;
  * Created by 13055 on 2019/4/30.
  */
 
-public class WeatherActivity extends AppCompatActivity {
+public class WeatherActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("M月d号");
 
@@ -53,7 +56,11 @@ public class WeatherActivity extends AppCompatActivity {
     public SwipeRefreshLayout swipeRefresh;
     private String mCityName;
     private Button navButton;
+    private Button myButton;
+    private Button settingButton;
     public DrawerLayout drawerLayout;
+
+    private FloatingActionButton fab_getLoction;//定位的悬浮按钮
 
     private ImageView weatherImage;
     private ScrollView weatherLayout;
@@ -118,7 +125,14 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh.setColorSchemeColors(R.color.colorPrimary);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navButton = (Button) findViewById(R.id.nav_button);
+        navButton.setOnClickListener(this);
+        settingButton = (Button) findViewById(R.id.settings_button);
+        settingButton.setOnClickListener(this);
+        myButton = (Button) findViewById(R.id.my_button);
+        myButton.setOnClickListener(this);
         weatherImage = (ImageView) findViewById(R.id.weatherImage);
+        fab_getLoction = (FloatingActionButton) findViewById(R.id.fab_get_location);
+        fab_getLoction.setOnClickListener(this);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
@@ -147,12 +161,6 @@ public class WeatherActivity extends AppCompatActivity {
         }else {
             loadBingPic();
         }
-        navButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
     }
 
     /*
@@ -333,5 +341,33 @@ public class WeatherActivity extends AppCompatActivity {
             return "星期天";
         }
         return null;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.nav_button:
+                drawerLayout.openDrawer(GravityCompat.START);
+                break;
+            case R.id.my_button:
+                Toast.makeText(MyApplication.getContext(),"等待开发中......", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(WeatherActivity.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.settings_button:
+                Toast.makeText(MyApplication.getContext(),"等待开发中......", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.fab_get_location:
+                Snackbar.make(view, "定位当前位置？", Snackbar.LENGTH_LONG)
+                        .setAction("是", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(MyApplication.getContext(),"允许定位请求......", Toast.LENGTH_SHORT).show();
+                            }
+                        }).show();
+
+                break;
+            default:
+        }
     }
 }
