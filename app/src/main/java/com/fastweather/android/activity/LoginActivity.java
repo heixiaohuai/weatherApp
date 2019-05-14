@@ -100,11 +100,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     }
                                     editor.commit();
                                     Toast.makeText(LoginActivity.this,"登陆成功", Toast.LENGTH_LONG).show();
-                                    //登陆成功后将用户登陆的手机号保存在全局的application中，后续会使用。
                                     MyApplication myApplication = new MyApplication();
-                                    myApplication.setLoginPhone(userPhoneTextView.getText().toString());
+                                    myApplication.setLoginFlag(1);
                                     //登陆成功后根据手机号码查询到用户信息，并且将用户信息传递到下一个Activity
-                                    String address1 = "http://" + ((MyApplication) getApplication()).getOkHttpURL() + "/Android/getUserInfo/" + myApplication.getLoginPhone();
+                                    String address1 = "http://" + ((MyApplication) getApplication()).getOkHttpURL() + "/Android/getUserInfo/" + userPhoneTextView.getText().toString();
                                     HttpUtil.sendOkHttpRequestByGet(address1, new Callback() {
                                         @Override
                                         public void onFailure(Call call, IOException e) {

@@ -1,10 +1,12 @@
 package com.fastweather.android.gson;
 
+import java.io.Serializable;
+
 /**
  * 用于展示当前日的天气信息
  * Created by 13055 on 2019/4/29.
  */
-public class NowWeather {
+public class NowWeather implements Serializable {
     /**
      * aqi : 43
      * aqiDetail : {"aqi":"43","area":"成都","co":"0.811","no2":"40","num":"149","o3":"51","o3_8h":"53","pm10":"45","pm2_5":"27","primary_pollutant":"","quality":"优质","so2":"5"}
@@ -109,7 +111,7 @@ public class NowWeather {
         this.wind_power = wind_power;
     }
 
-    public static class AqiDetailBean {
+    public static class AqiDetailBean implements Serializable {
         /**
          * aqi : 43
          * area : 成都

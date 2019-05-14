@@ -99,7 +99,6 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 }else if (currentLevel == LEVEL_COUNTY){
                     String cityName = countyList.get(position).getCountyName();
-                    Log.d("cityName", cityName);
                     if (getActivity() instanceof MainActivity){
                         Intent intent = new Intent(getActivity(), WeatherActivity.class);
                         intent.putExtra("cityName", cityName);
@@ -189,7 +188,6 @@ public class ChooseAreaFragment extends Fragment {
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
             String address = "http://" + ((MyApplication) getActivity().getApplication()).getOkHttpURL() + "/Android/getAllArea/" + provinceCode + "/" + cityCode;
-            Log.d("requestURL", address);
             queryFromServer(address, "county");
         }
     }

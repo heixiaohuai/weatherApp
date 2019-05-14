@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fastweather.android.gson.CityInfo;
 import com.fastweather.android.gson.NowWeather;
+import com.fastweather.android.gson.Suggestion;
 import com.fastweather.android.gson.WeatherInfo;
 import com.fastweather.android.pojo.City;
 import com.fastweather.android.pojo.County;
@@ -118,5 +119,16 @@ public class ParseGsonUtil {
         JSONObject cityInfoObject = allWeatherInfoArray.getJSONObject(1);
         CityInfo cityInfo = JSON.parseObject(String.valueOf(cityInfoObject), CityInfo.class);
         return cityInfo;
+    }
+
+    /*
+    * 将返回的天气信息json串中的suggestion信息解析为Suggestion实体类类型
+    * 使用的是阿里巴巴的FastJson
+    * */
+    public static Suggestion handleSuggestionResponse(String response){
+        JSONArray allWeatherInfoArray = JSONArray.parseArray(response);
+        JSONObject suggestionObject = allWeatherInfoArray.getJSONObject(2).getJSONObject("index");
+        Suggestion suggestion = JSON.parseObject(String.valueOf(suggestionObject), Suggestion.class);
+        return suggestion;
     }
 }

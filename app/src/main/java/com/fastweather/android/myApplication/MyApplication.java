@@ -15,7 +15,15 @@ import org.litepal.LitePal;
 public class MyApplication extends Application {
     private static Context context;
     private String okHttpURL;
-    private String loginPhone;
+    private int loginFlag;//登录标志，0表示未登录，1表示登录
+
+    public int getLoginFlag() {
+        return loginFlag;
+    }
+
+    public void setLoginFlag(int loginFlag) {
+        this.loginFlag = loginFlag;
+    }
 
     public static Context getContext() {
         return context;
@@ -33,14 +41,6 @@ public class MyApplication extends Application {
         this.okHttpURL = okHttpURL;
     }
 
-    public String getLoginPhone() {
-        return loginPhone;
-    }
-
-    public void setLoginPhone(String loginPhone) {
-        this.loginPhone = loginPhone;
-    }
-
     //服务器ip（132.232.43.80）
     //小米手机开热点ip（）
     //连接同一电信网ip（192.168.1.157）
@@ -50,6 +50,5 @@ public class MyApplication extends Application {
         context = getApplicationContext();
         setOkHttpURL("192.168.1.157:8080");
         LitePal.initialize(context);
-        loginPhone = null;
     }
 }
