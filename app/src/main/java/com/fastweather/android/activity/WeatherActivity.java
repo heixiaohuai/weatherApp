@@ -19,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -418,7 +419,8 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
                 MyApplication myApplication = (MyApplication) getApplication();
                 int loginFlag = myApplication.getLoginFlag();
                 if (loginFlag == 1){
-                    Toast.makeText(MyApplication.getContext(),"已经完成了登录操作，展示用户信息界面等待开发中......", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(WeatherActivity.this, UserActivity.class);
+                    startActivity(intent);
                 }else {
                     Intent intent = new Intent(WeatherActivity.this, LoginActivity.class);
                     startActivity(intent);
@@ -430,11 +432,11 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.fab_get_location:
+                getCityByBaiDuLocation();
                 Snackbar.make(view, "定位当前位置？", Snackbar.LENGTH_LONG)
                         .setAction("是", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                getCityByBaiDuLocation();
                                 AlertDialog alertDialog = new AlertDialog.Builder(WeatherActivity.this)
                                         .setTitle("您所在的城市为：")
                                         .setMessage(cityNameByLocation)

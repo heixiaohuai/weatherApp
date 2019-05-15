@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/my_information"
+            android:icon="@drawable/list_my"
+            android:title="个人信息" />
+        <item
+            android:id="@+id/my_cityList"
+            android:icon="@drawable/list_city"
+            android:title="我的城市" />
+        <item
+            android:id="@+id/my_login_out"
+            android:icon="@drawable/list_qiehuanzhanghao"
+            android:title="切换账号" />
+    </group>
+</menu>
