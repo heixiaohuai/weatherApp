@@ -60,9 +60,21 @@
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.SuggestionActivity" />
         <activity android:name=".activity.AQIActivity" />
-        <activity android:name=".activity.UserActivity" android:launchMode="singleTask" />
+        <activity android:name=".activity.UserActivity" />
         <activity android:name=".activity.UserInformationActivity" />
-        <activity android:name=".activity.EditUserDescriptionActivity"></activity>
+        <activity android:name=".activity.EditUserDescriptionActivity" />
+        <activity android:name=".activity.UserCityListActivity" />
+
+        <receiver
+            android:name=".broadcast.MyBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.fastweather.android.MY_LOCAL_BROADCAST" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".activity.SettingActivity"></activity>
     </application>
 
 </manifest>

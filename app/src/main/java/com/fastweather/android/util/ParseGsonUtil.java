@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fastweather.android.gson.CityInfo;
 import com.fastweather.android.gson.NowWeather;
 import com.fastweather.android.gson.Suggestion;
+import com.fastweather.android.gson.UserCity;
 import com.fastweather.android.gson.WeatherInfo;
 import com.fastweather.android.pojo.City;
 import com.fastweather.android.pojo.County;
@@ -130,5 +131,18 @@ public class ParseGsonUtil {
         JSONObject suggestionObject = allWeatherInfoArray.getJSONObject(2).getJSONObject("index");
         Suggestion suggestion = JSON.parseObject(String.valueOf(suggestionObject), Suggestion.class);
         return suggestion;
+    }
+
+    /*
+    * 将返回的用户添加的城市列表信息解析为UserCity实体类类型的集合
+    * 使用的是阿里巴巴的FastJson
+    * */
+    public static List<UserCity> handleUserCityResponse(String response){
+        List<UserCity> userCityList = new ArrayList<>();
+        JSONArray allUserCityInfo = JSONArray.parseArray(response);
+        for (int i=0; i<allUserCityInfo.size(); i++){
+            userCityList.add(JSON.parseObject(String.valueOf(allUserCityInfo.get(i)), UserCity.class));
+        }
+        return userCityList;
     }
 }

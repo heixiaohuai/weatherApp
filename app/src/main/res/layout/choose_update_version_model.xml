@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:id="@+id/choose_update_model"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/model_auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="自动更新"
+            android:textSize="17sp"
+            android:textColor="#377e5e"
+            android:layout_weight="1"
+            android:checked="true"
+            android:drawablePadding="20dp"
+            android:paddingLeft="15dp"/>
+
+        <RadioButton
+            android:id="@+id/model_never"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="从不更新"
+            android:textColor="#377e5e"
+            android:textSize="17sp"
+            android:layout_weight="1"
+            android:drawablePadding="20dp"
+            android:paddingLeft="15dp"/>
+    </RadioGroup>
+</LinearLayout>

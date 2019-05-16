@@ -2,8 +2,11 @@ package com.fastweather.android.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -14,6 +17,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -183,6 +187,14 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
             permissionList.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
 
+        //得到广播传来的城市名
+        String cityNameForBroad = getIntent().getStringExtra("cityNameForBroad");
+        if (cityNameForBroad==null || cityNameForBroad.equals("")){//如果城市名为空，则说明第一次运行，或者是没有通过用户城市列表进行跳转到此界面
+            Toast.makeText(WeatherActivity.this,"没有城市", Toast.LENGTH_SHORT).show();
+        }else {
+            requestWeather(cityNameForBroad);
+        }
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
         if (weatherString != null){
@@ -275,9 +287,52 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
                         swipeRefresh.setRefreshing(false);
                     }
                 });
+
             }
         });
         loadBingPic();
+        SharedPreferences pref = getSharedPreferences("Users", MODE_PRIVATE);
+        String address1 = "http://"+((MyApplication) getApplication()).getOkHttpURL() + "/Android/addUserCity/" + pref.getString("phone","") + "/" + countyName;
+        HttpUtil.sendOkHttpRequestByGet(address1, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MyApplication.getContext(), "添加城市失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseInfo = response.body().string();
+                if (!"The city has been added".equals(responseInfo)){
+                    if (!"Add city failed".equals(responseInfo)){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MyApplication.getContext(), "添加城市成功", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MyApplication.getContext(), "添加城市失败", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MyApplication.getContext(), "该城市已经被添加", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     /*
@@ -430,7 +485,8 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.settings_button:
-                Toast.makeText(MyApplication.getContext(),"等待开发中......", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(WeatherActivity.this, SettingActivity.class);
+                startActivity(intent);
                 break;
 
             case R.id.fab_get_location:

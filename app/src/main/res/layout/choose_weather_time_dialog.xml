@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:id="@+id/choose_weather_time_model"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/hour1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1小时"
+            android:textSize="17sp"
+            android:textColor="#377e5e"
+            android:layout_weight="1"
+            android:checked="true"
+            android:drawablePadding="20dp"
+            android:paddingLeft="15dp"/>
+
+        <RadioButton
+            android:id="@+id/hour2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2小时"
+            android:textColor="#377e5e"
+            android:textSize="17sp"
+            android:layout_weight="1"
+            android:drawablePadding="20dp"
+            android:paddingLeft="15dp"/>
+
+        <RadioButton
+            android:id="@+id/hour3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="3小时"
+            android:textColor="#377e5e"
+            android:textSize="17sp"
+            android:layout_weight="1"
+            android:drawablePadding="20dp"
+            android:paddingLeft="15dp"/>
+
+        <RadioButton
+            android:id="@+id/hour4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="8小时"
+            android:textColor="#377e5e"
+            android:textSize="17sp"
+            android:layout_weight="1"
+            android:drawablePadding="20dp"
+            android:paddingLeft="15dp"/>
+    </RadioGroup>
+</LinearLayout>
