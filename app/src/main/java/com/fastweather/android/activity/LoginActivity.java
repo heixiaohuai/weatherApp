@@ -35,7 +35,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private CheckBox rememberPhone;
 
     private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
+    private SharedPreferences userInfoPref;
+    private SharedPreferences.Editor userEditor;
+    private SharedPreferences.Editor userInfoEditor;
 
     private String loginInfo;//服务器返回的数据
 
@@ -45,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         pref = getSharedPreferences("Users", MODE_PRIVATE);
-
+        userInfoPref = getSharedPreferences("UserInfo", MODE_PRIVATE);
         userPhoneTextView = (TextView) findViewById(R.id.userPhone);
         passwordTextView = (TextView) findViewById(R.id.password);
         loginButton = (Button) findViewById(R.id.loginButton);
@@ -90,18 +92,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             public void run() {
                                 if ("login success".equals(loginInfo)){
                                     dialog.dismiss();
-                                    editor = pref.edit();
+                                    userEditor = pref.edit();
                                     if (rememberPhone.isChecked()){
-                                        editor.putString("phone", userPhoneTextView.getText().toString());
-                                        editor.putString("password", passwordTextView.getText().toString());
-                                        editor.putBoolean("remember_password", true);
+                                        userEditor.putString("phone", userPhoneTextView.getText().toString());
+                                        userEditor.putString("password", passwordTextView.getText().toString());
+                                        userEditor.putBoolean("remember_password", true);
                                     }else {
-                                        editor.clear();
+                                        userEditor.clear();
                                     }
-                                    editor.commit();
+                                    userEditor.commit();
                                     Toast.makeText(LoginActivity.this,"登陆成功", Toast.LENGTH_LONG).show();
-                                    MyApplication myApplication = new MyApplication();
-                                    myApplication.setLoginFlag(1);
+                                    ((MyApplication) getApplication()).setLoginFlag(1);//登录成功后将登陆标志设置为1
                                     //登陆成功后根据手机号码查询到用户信息，并且将用户信息传递到下一个Activity
                                     String address1 = "http://" + ((MyApplication) getApplication()).getOkHttpURL() + "/Android/getUserInfo/" + userPhoneTextView.getText().toString();
                                     HttpUtil.sendOkHttpRequestByGet(address1, new Callback() {
@@ -114,8 +115,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         public void onResponse(Call call, Response response) throws IOException {
                                             String responseUserInfo = response.body().string();
                                             User loginUser = JSON.parseObject(responseUserInfo, User.class);
-                                            Intent intent = new Intent(LoginActivity.this, LoginSuccessActivity.class);
-                                            intent.putExtra("loginUser_data", loginUser);
+                                            userInfoEditor = userInfoPref.edit();
+                                            userInfoEditor.putString("phone", loginUser.getPhone());
+                                            userInfoEditor.putString("password", loginUser.getPassword());
+                                            userInfoEditor.putString("username", loginUser.getUsername());
+                                            if (loginUser.getDescription()==null || loginUser.getDescription().equals("")){
+                                                userInfoEditor.putString("description", "这个人很懒，什么都没留下");
+                                            }else {
+                                                userInfoEditor.putString("description", loginUser.getDescription());
+                                            }
+
+                                            if (loginUser.getSex()==null || loginUser.getSex().equals("")){
+                                                userInfoEditor.putString("sex", "未设置");
+                                            }else {
+                                                userInfoEditor.putString("sex", loginUser.getSex());
+                                            }
+
+                                            if (loginUser.getBirthdate()==null || loginUser.getBirthdate().equals("")){
+                                                userInfoEditor.putString("birthday", "未设置");
+                                            }else {
+                                                userInfoEditor.putString("birthday", loginUser.getBirthdate());
+                                            }
+                                            userInfoEditor.apply();
+                                            Intent intent = new Intent(LoginActivity.this, WeatherActivity.class);
                                             startActivity(intent);
                                         }
                                     });

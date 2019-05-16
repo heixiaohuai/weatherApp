@@ -16,6 +16,6 @@
         android:id="@+id/my_nav_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:headerLayout="@layout/user_header_layout"
+        app:headerLayout="@layout/header_layout"
         app:menu="@menu/my_menu" />
 </FrameLayout>

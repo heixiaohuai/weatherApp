@@ -11,4 +11,10 @@
         android:id="@+id/userInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/asdasd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="用户信息"/>
 </android.support.constraint.ConstraintLayout>

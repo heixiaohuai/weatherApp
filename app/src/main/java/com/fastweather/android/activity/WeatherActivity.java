@@ -30,6 +30,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -41,6 +42,7 @@ import com.fastweather.android.gson.NowWeather;
 import com.fastweather.android.gson.Suggestion;
 import com.fastweather.android.gson.WeatherInfo;
 import com.fastweather.android.myApplication.MyApplication;
+import com.fastweather.android.pojo.User;
 import com.fastweather.android.service.AutoUpdateService;
 import com.fastweather.android.util.HttpUtil;
 import com.fastweather.android.util.ParseGsonUtil;

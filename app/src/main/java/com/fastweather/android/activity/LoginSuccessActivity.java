@@ -1,7 +1,10 @@
 package com.fastweather.android.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.fastweather.android.R;
@@ -15,7 +18,7 @@ public class LoginSuccessActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_success);
         TextView u = (TextView) findViewById(R.id.userInfo);
-        User user = (User) getIntent().getSerializableExtra("loginUser_data");
+        final User user = (User) getIntent().getSerializableExtra("loginUser_data");
         StringBuilder userInfo = new StringBuilder();
         userInfo.append("id：").append(user.getId()).append("\n");
         userInfo.append("phone：").append(user.getPhone()).append("\n");
@@ -26,5 +29,15 @@ public class LoginSuccessActivity extends AppCompatActivity {
         userInfo.append("description：").append(user.getDescription()).append("\n");
         userInfo.append("headportrait：").append(user.getHeadportrait()).append("\n");
         u.setText(userInfo);
+
+        Button userInfomation = (Button) findViewById(R.id.asdasd);
+        userInfomation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginSuccessActivity.this, UserInformationActivity.class);
+                intent.putExtra("userInfo", user);
+                startActivity(intent);
+            }
+        });
     }
 }

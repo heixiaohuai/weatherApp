@@ -60,8 +60,9 @@
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.SuggestionActivity" />
         <activity android:name=".activity.AQIActivity" />
-        <activity android:name=".activity.UserActivity" />
-        <activity android:name=".activity.UserImformationActivity"></activity>
+        <activity android:name=".activity.UserActivity" android:launchMode="singleTask" />
+        <activity android:name=".activity.UserInformationActivity" />
+        <activity android:name=".activity.EditUserDescriptionActivity"></activity>
     </application>
 
 </manifest>

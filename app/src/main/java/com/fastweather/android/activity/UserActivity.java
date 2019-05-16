@@ -1,18 +1,26 @@
 package com.fastweather.android.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.fastweather.android.R;
+import com.fastweather.android.pojo.User;
+import com.fastweather.android.util.HttpUtil;
 
 public class UserActivity extends AppCompatActivity {
+
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,17 +29,22 @@ public class UserActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         NavigationView navigationView = (NavigationView) findViewById(R.id.my_nav_view);
+        View headerLayout = navigationView.getHeaderView(0);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-//        navigationView.setCheckedItem(R.id.my_information);
+        TextView nickName = headerLayout.findViewById(R.id.my_user_name);
+        TextView description = headerLayout.findViewById(R.id.my_user_description);
+        pref = getSharedPreferences("UserInfo", MODE_PRIVATE);
+        nickName.setText(pref.getString("username",""));
+        description.setText(pref.getString("description",""));
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.my_information:
-                        Intent intent = new Intent(UserActivity.this, UserImformationActivity.class);
+                        Intent intent = new Intent(UserActivity.this, UserInformationActivity.class);
                         startActivity(intent);
                         break;
                     case R.id.my_cityList:break;
