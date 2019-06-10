@@ -41,13 +41,13 @@ public class MyApplication extends Application {
         this.okHttpURL = okHttpURL;
     }
 
-    //小米手机开热点ip（）
+    //小米手机联通卡开热点ip（192.168.43.226）
     //连接同一电信网ip（192.168.1.157）
     @Override
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-        setOkHttpURL("192.168.1.157:8080");
+        setOkHttpURL("192.168.43.226:8080");
         LitePal.initialize(context);
     }
 }
