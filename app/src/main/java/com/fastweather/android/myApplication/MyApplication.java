@@ -41,7 +41,6 @@ public class MyApplication extends Application {
         this.okHttpURL = okHttpURL;
     }
 
-    //服务器ip（132.232.43.80）
     //小米手机开热点ip（）
     //连接同一电信网ip（192.168.1.157）
     @Override

@@ -38,7 +38,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private TextView settingVersionUpdateTextView;
     private TextView settingRattingBarTextView;
 
-    private Button saveButton;
+    private Button saveButton, backButton;
 
     private SharedPreferences pref, userPref;
     private SharedPreferences.Editor editor;
@@ -60,6 +60,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         settingAboutTeamCardView = (CardView) findViewById(R.id.setting_about_team_cardView);
 
         saveButton = (Button) findViewById(R.id.save_setting);
+        backButton = (Button) findViewById(R.id.setting_back_button);
 
         settingWeatherTimeTextView = (TextView) findViewById(R.id.setting_weather_time);
         settingVersionUpdateTextView = (TextView) findViewById(R.id.setting_version_update);
@@ -74,6 +75,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         settingRattingBarCardView.setOnClickListener(this);
         settingAboutTeamCardView.setOnClickListener(this);
         saveButton.setOnClickListener(this);
+        backButton.setOnClickListener(this);
     }
 
     @Override
@@ -241,7 +243,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 });
                 builder.create().show();
+                break;
 
+            case R.id.setting_back_button:
+                finish();
                 break;
 
             default:break;
